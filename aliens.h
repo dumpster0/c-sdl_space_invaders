@@ -9,8 +9,11 @@ typedef enum {
 typedef struct {
   position pos;
   alienstatus status;
-  int sprite;
   int index;
+  int sprite;
 } alien;
+
+void alien_move(alien* alien, direction direction);
+void alien_spawn(alien* alien, position pos, int index);
 
 #endif

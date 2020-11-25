@@ -7,6 +7,9 @@ void player_move(player* player, direction direction) {
   
 }
 
-player* player_spawn() {
+void player_spawn(player* player) {
+  position pos = {.x = PLAYER_STARTING_X, .y = PLAYER_STARTING_Y};
 
+  player->lives = 3;
+  player->pos = pos;
 }

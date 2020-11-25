@@ -7,8 +7,8 @@
 //custom headers
 #include "./helpers.h"
 #include "./aliens.h"
-#include "./bullets.h"
 #include "./player.h"
+#include "./bullets.h"
 #include "./game.h"
 #include "./render.h"
 

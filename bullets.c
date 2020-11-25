@@ -1,12 +1,23 @@
 #include <stdio.h>
 
 #include "./helpers.h"
-#include "./bullets.h"
 #include "./aliens.h"
 #include "./player.h"
+#include "./bullets.h"
 
-bullet* bullet_spawn(character shooter, position pos, bullet bullets[]) {
+void bullet_spawn(character shooter, position pos, bullet* bullets[]) {
+  bullet* bullet;
 
+  bullet->pos = pos;
+  bullet->shooter = shooter;
+  bullet->status = ACTIVE;
+
+  for(int i = 0; i < MAX_BULLETS_ON_SCREEN; ++i) {
+    if(bullets[i]->status == INACTIVE) {
+      bullets[i] = bullet;
+      break;
+    }
+  }
 }
 
 void bullet_move(bullet* bullet) {

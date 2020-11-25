@@ -11,6 +11,9 @@
 #define ALIEN_BLOCK_ROWS 5
 #define ALIEN_BLOCK_COLUMNS 8
 
+#define PLAYER_STARTING_X WINDOW_WIDTH/2
+#define PLAYER_STARTING_Y WINDOW_HEIGHT - 20
+
 typedef struct {
   int x;
   int y;
