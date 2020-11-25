@@ -11,6 +11,7 @@ typedef struct {
   alienstatus status;
   int index;
   int sprite;
+  direction direction;
 } alien;
 
 void alien_move(alien* alien, direction direction);

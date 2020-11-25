@@ -14,6 +14,9 @@
 #define PLAYER_STARTING_X WINDOW_WIDTH/2
 #define PLAYER_STARTING_Y WINDOW_HEIGHT - 20
 
+#define BULLET_SPEED 1
+#define PLAYER_SPEED 1
+
 typedef struct {
   int x;
   int y;
@@ -27,7 +30,9 @@ typedef enum {
 
 typedef enum {
   LEFT,
-  RIGHT
+  RIGHT,
+  UP,
+  DOWN
 } direction;
 
 
