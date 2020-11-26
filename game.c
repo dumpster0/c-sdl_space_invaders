@@ -48,7 +48,7 @@ void game_init(game* game) {
   for(int i = 0; i < ALIEN_BLOCK_ROWS; ++i) {
     for(int j = 0; j < ALIEN_BLOCK_COLUMNS; ++j) {
       game->aliens[i][j] = malloc(sizeof(alien));
-      position pos = {.x = BORDER + j * SPRITE_SIZE, .y = BORDER + i * SPRITE_SIZE};
+      position pos = {.x = BORDER + j * SPRITE_SIZE, .y = 2*BORDER + i * SPRITE_SIZE};
       alien_spawn(game->aliens[i][j], pos, i);
       game->aliens[i][j]->direction = RIGHT;
       alien_move(game->aliens[i][j], game->aliens[i][j]->direction);

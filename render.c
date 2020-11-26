@@ -12,6 +12,26 @@
 #include "./game.h"
 #include "./render.h"
 
+void render_player_lives(SDL_Renderer* renderer, game* game) {
+  SDL_Surface* life_surface;
+  SDL_Texture* life_texture;
+
+  life_surface = SDL_LoadBMP("./media/invaders_player.bmp");
+  life_texture = SDL_CreateTextureFromSurface(renderer, life_surface);
+  SDL_FreeSurface(life_surface);
+
+  for(int i = 1; i <= game->player->lives; ++i) {
+    SDL_Rect liferect;
+    liferect.w = liferect.h = SPRITE_SIZE;
+    liferect.x = WINDOW_WIDTH - (i*SPRITE_SIZE) - (i*BORDER);
+    liferect.y = BORDER;
+
+    SDL_RenderCopy(renderer, life_texture, NULL, &liferect);
+  }
+
+  SDL_DestroyTexture(life_texture);
+}
+
 void render_over(SDL_Renderer* renderer, game* game) {
   SDL_Rect over_rect = {100, 80, 450, 100};
   SDL_Rect winner_rect = {150, 200, 350, 60};
@@ -205,6 +225,8 @@ void render_bullet(bullet* bullet, SDL_Renderer* renderer) {
 //render game
 void render_game(game* game, SDL_Renderer* renderer, SDL_Window* window) {
   render_player(game->player, renderer);
+
+  render_player_lives(renderer, game);
 
   //render all aliens
   for(int i = 0; i < ALIEN_BLOCK_ROWS; ++i) {
