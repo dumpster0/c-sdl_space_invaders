@@ -2,6 +2,7 @@
 
 //SDL header
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
 
 //custom headers
 #include "./helpers.h"
@@ -10,6 +11,122 @@
 #include "./bullets.h"
 #include "./game.h"
 #include "./render.h"
+
+void render_over(SDL_Renderer* renderer, game* game) {
+  SDL_Rect over_rect = {100, 80, 450, 100};
+  SDL_Rect winner_rect = {150, 200, 350, 60};
+  SDL_Rect exit_rect = {150, 300, 350, 45};
+
+  TTF_Init();
+  TTF_Font* font = TTF_OpenFont("./media/ARCADECLASSIC.TTF", 40);
+  SDL_Color fontcolor = {255, 255, 255, 255};
+
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+
+  SDL_Surface* font_surface = TTF_RenderText_Solid(font, "GAME  OVER", fontcolor); 
+  SDL_Texture* font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &over_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  if(game->winner == PLAYER) {
+    font_surface = TTF_RenderText_Solid(font, "YOU  WIN", fontcolor);
+  }
+  else if(game->winner == ALIEN) {
+    font_surface = TTF_RenderText_Solid(font, "YOU  LOSE", fontcolor);
+  }
+  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &winner_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  font_surface = TTF_RenderText_Solid(font, "PRESS  E  TO  EXIT", fontcolor); 
+  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &exit_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  SDL_RenderPresent(renderer);
+
+  TTF_CloseFont(font);
+  TTF_Quit();
+
+}
+
+void render_start(SDL_Renderer* renderer, game* game) {
+  SDL_Rect title_rect = {100, 80, 450, 100};
+  SDL_Rect start_rect = {50, 200, 550, 45};
+  SDL_Rect exit_rect = {150, 280, 350, 45};
+
+  TTF_Init();
+  TTF_Font* font = TTF_OpenFont("./media/ARCADECLASSIC.TTF", 40);
+  SDL_Color fontcolor = {255, 255, 255, 255};
+
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+
+  SDL_Surface* font_surface = TTF_RenderText_Solid(font, "SPACE  INVADERS", fontcolor); 
+  SDL_Texture* font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &title_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  font_surface = TTF_RenderText_Solid(font, "PRESS  SPACE  TO  START", fontcolor); 
+  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &start_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  font_surface = TTF_RenderText_Solid(font, "PRESS  E  TO  EXIT", fontcolor); 
+  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &exit_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  SDL_RenderPresent(renderer);
+
+  TTF_CloseFont(font);
+  TTF_Quit();
+}
+
+//render pause menu screen
+void render_paused(SDL_Renderer* renderer, game* game) {
+  SDL_Rect paused_rect = {175, 80, 300, 75};
+  SDL_Rect resume_rect = {50, 200, 550, 45};
+  SDL_Rect exit_rect = {150, 280, 350, 45};
+
+
+  TTF_Init();
+  TTF_Font* font = TTF_OpenFont("./media/ARCADECLASSIC.TTF", 40);
+  SDL_Color fontcolor = {255, 255, 255, 255};
+
+  SDL_SetRenderDrawColor(renderer, 0,0,0,255);
+  SDL_RenderClear(renderer);
+
+  SDL_Surface* font_surface = TTF_RenderText_Solid(font, "PAUSED", fontcolor); 
+  SDL_Texture* font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &paused_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  font_surface = TTF_RenderText_Solid(font, "PRESS  SPACE  TO  RESUME", fontcolor); 
+  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &resume_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  font_surface = TTF_RenderText_Solid(font, "PRESS  E  TO  EXIT", fontcolor); 
+  font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+  SDL_RenderCopy(renderer, font_texture, NULL, &exit_rect);
+  SDL_FreeSurface(font_surface);
+  SDL_DestroyTexture(font_texture);
+
+  SDL_RenderPresent(renderer);
+
+  TTF_CloseFont(font);
+  TTF_Quit();
+}
 
 //render background
 void render_bg(SDL_Renderer* renderer) {

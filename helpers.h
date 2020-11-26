@@ -7,7 +7,7 @@
 
 #define SPRITE_SIZE 32
 
-#define MAX_BULLETS_ON_SCREEN 10
+#define MAX_BULLETS_ON_SCREEN 5
 
 #define ALIEN_BLOCK_ROWS 5
 #define ALIEN_BLOCK_COLUMNS 10
@@ -15,7 +15,7 @@
 #define PLAYER_STARTING_X 325 //WINDOW_WIDTH/2 doesnt work, and I have no idea why fml
 #define PLAYER_STARTING_Y WINDOW_HEIGHT - SPRITE_SIZE - BORDER
 
-#define BULLET_SPEED 10
+#define BULLET_SPEED 5
 #define PLAYER_SPEED 7
 
 #define FPS 60

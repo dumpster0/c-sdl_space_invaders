@@ -13,6 +13,104 @@
 #include "./game.h"
 #include "./render.h"
 
+void paused(SDL_Renderer* renderer, SDL_Window* window, game* game) {
+  SDL_Event event;
+
+  int quit = 0;
+
+  while(SDL_PollEvent(&event)) {
+    if(event.type == SDL_QUIT) {
+      quit = 1;
+      break;
+    } 
+    if(event.type == SDL_KEYDOWN) {
+      switch(event.key.keysym.sym) {
+        case SDLK_e : game_cleanup(game); game_init(game); break;
+        case SDLK_SPACE : game->state = RUNNING; break;
+        default : {}
+      }
+    }
+  }
+
+  if(quit) {
+    game_cleanup(game);
+    free(game);
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_Quit();
+    exit(EXIT_SUCCESS);
+  }
+
+  render_paused(renderer, game);
+}
+
+void over(SDL_Renderer* renderer, SDL_Window* window, game* game) {
+  SDL_Event event;
+
+  int quit = 0;
+
+  while(SDL_PollEvent(&event)) {
+    if(event.type == SDL_QUIT) {
+      quit = 1;
+      break;
+    } 
+    if(event.type == SDL_KEYDOWN) {
+      switch(event.key.keysym.sym) {
+        case SDLK_e : quit = 1; break;
+        case SDLK_SPACE : game_cleanup(game); game_init(game); break;
+        default : {}
+      }
+    }
+  }
+
+  if(quit) {
+    game_cleanup(game);
+    free(game);
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_Quit();
+    exit(EXIT_SUCCESS);
+  }
+
+  render_over(renderer, game);
+}
+
+void start(SDL_Renderer* renderer, SDL_Window* window, game* game) {
+  SDL_Event event;
+
+  int quit = 0;
+  
+  while(SDL_PollEvent(&event)) {
+    if(event.type == SDL_QUIT) {
+      quit = 1;
+      break;
+    }
+    if(event.type == SDL_KEYDOWN) {
+      switch(event.key.keysym.sym) {
+        case SDLK_e : quit = 1; break;
+        case SDLK_SPACE : game->state = RUNNING; break;
+        default : {}
+      }
+    }
+  }
+
+  if(quit) {
+    game_cleanup(game);
+    free(game);
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_Quit();
+    exit(EXIT_SUCCESS);
+  }
+
+  render_start(renderer, game);
+}
+
+
+
+
+
+ 
 int main() {
 
   //initialize the game variable and allocate memory to it
@@ -44,6 +142,18 @@ int main() {
   int alienmovecounter = 0;
 
   while(1) {
+    if(game0->state == PAUSED) {
+      paused(renderer, window, game0);
+    }
+    else if(game0->state == OVER) {
+      over(renderer, window, game0);
+    }
+    else if(game0->state == START) {
+      start(renderer, window, game0);
+    }
+    else {
+
+      quit = 0;
 
     //initializing startimer for every iteration to count the time taken
     //by the loop, to facilitate FPS capping using SDL_Delay at the end
@@ -78,10 +188,6 @@ int main() {
         }
       }
 
-      //checking keypresses in pause menu
-      else if(event.type == SDL_KEYDOWN && game0->state == PAUSED) {
-      }
-
       //checking keyups while game is running
       else if(event.type == SDL_KEYUP && game0->state == RUNNING) {
         if(event.key.keysym.sym == SDLK_LEFT) {
@@ -108,9 +214,34 @@ int main() {
       player_move(game0->player, RIGHT);
     }
 
+    //check if any aliens are still alive
+    //if all are dead, game over, with player as winner
+    int alien_left = 0;
+    for(int i = 0; i < ALIEN_BLOCK_ROWS; ++i) {
+      for(int j = 0; j < ALIEN_BLOCK_COLUMNS; ++j) {
+        if(game0->aliens[i][j]->status == ALIVE) {
+          alien_left = 1;
+          if(game0->aliens[i][j]->pos.y + SPRITE_SIZE > game0->player->pos.y) {
+            game0->winner = ALIEN;
+            game0->state = OVER;
+          }
+        }
+      }
+    }
+    if(alien_left == 0) {
+      game0->winner = PLAYER;
+      game0->state = OVER;
+    }
+
+    //check if player is dead
+    //if player dead, call game over with winner alien
+    if(game0->player->lives <= 0) {
+      game0->winner = ALIEN;
+      game0->state = OVER;
+    }
+
     //render background
     render_bg(renderer);
-
     //update entire game variable
     game_update(game0, alienmovecounter);
     //render player, aliens, and bullets using the game variable
@@ -126,10 +257,13 @@ int main() {
     if(SDL_GetTicks() - starttimer < 1000/FPS) {
       SDL_Delay(1000/FPS - (SDL_GetTicks() - starttimer));
     }
+    }
   }
 
 
-  //clean up renderer and window
+  //clean up game, renderer and window
+  game_cleanup(game0);
+  free(game0);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
 
