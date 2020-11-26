@@ -28,9 +28,10 @@ void game_init(game* game) {
   for(int i = 0; i < ALIEN_BLOCK_ROWS; ++i) {
     for(int j = 0; j < ALIEN_BLOCK_COLUMNS; ++j) {
       game->aliens[i][j] = malloc(sizeof(alien));
-      position pos = {.x = i * SPRITE_SIZE, .y = j * SPRITE_SIZE};
+      position pos = {.x = BORDER + j * SPRITE_SIZE, .y = BORDER + i * SPRITE_SIZE};
       alien_spawn(game->aliens[i][j], pos, i);
       game->aliens[i][j]->direction = RIGHT;
+      alien_move(game->aliens[i][j], game->aliens[i][j]->direction);
     }
   }
 
@@ -40,16 +41,23 @@ void game_init(game* game) {
   }
 }
 
-void game_update(game* game) {
+void game_update(game* game, int alienmovecounter) {
 
   position alienpos = game->aliens[0][0]->pos;
 
-  for(int i = 0; i < ALIEN_BLOCK_ROWS; ++i) {
-    for(int j = 0; j < ALIEN_BLOCK_COLUMNS; ++j) {
-      if(alienpos.x < SPRITE_SIZE || alienpos.x > WINDOW_WIDTH - SPRITE_SIZE) {
-        game->aliens[i][j]->direction = (game->aliens[i][j]->direction == LEFT) ? RIGHT : LEFT;
+  if(alienmovecounter % 60 == 0) {
+    for(int i = 0; i < ALIEN_BLOCK_ROWS; ++i) {
+      for(int j = 0; j < ALIEN_BLOCK_COLUMNS; ++j) {
+        if(alienpos.x < SPRITE_SIZE) {
+          game->aliens[i][j]->direction = RIGHT;
+          alien_move(game->aliens[i][j], DOWN);
+        }
+        else if(alienpos.x + (ALIEN_BLOCK_COLUMNS * SPRITE_SIZE) > WINDOW_WIDTH - SPRITE_SIZE) {
+          game->aliens[i][j]->direction = LEFT;
+          alien_move(game->aliens[i][j], DOWN);
+        }
+        alien_move(game->aliens[i][j], game->aliens[i][j]->direction);
       }
-      alien_move(game->aliens[i][j], game->aliens[i][j]->direction);
     }
   }
 
@@ -62,5 +70,13 @@ void game_update(game* game) {
       check_player_collision(game->bullets[i], game->player);
       check_alien_collision(game->bullets[i], game->aliens);
     }
+  }
+
+  //check if player is going outside window
+  if(game->player->pos.x < BORDER) {
+    game->player->pos.x = BORDER;
+  }
+  if(game->player->pos.x + SPRITE_SIZE > WINDOW_WIDTH - BORDER) {
+    game->player->pos.x = WINDOW_WIDTH - SPRITE_SIZE - BORDER;
   }
 }

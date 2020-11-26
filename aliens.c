@@ -19,7 +19,6 @@ void alien_move(alien* alien, direction direction) {
 }
 
 void alien_spawn(alien* alien, position pos, int index) { 
-  alien = malloc(sizeof(alien));
   alien->pos = pos;
   alien->status = ALIVE;
   alien->index = index;

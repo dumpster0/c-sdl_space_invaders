@@ -41,6 +41,7 @@ int main() {
   int playerright = 0;
   int quit = 0;
   int starttimer;
+  int alienmovecounter = 0;
 
   while(1) {
 
@@ -48,6 +49,8 @@ int main() {
     //by the loop, to facilitate FPS capping using SDL_Delay at the end
     //of the loop
     starttimer = SDL_GetTicks();
+
+    ++alienmovecounter;
 
     //polling for event started
     while(SDL_PollEvent(&event)) {
@@ -109,7 +112,7 @@ int main() {
     render_bg(renderer);
 
     //update entire game variable
-    game_update(game0);
+    game_update(game0, alienmovecounter);
     //render player, aliens, and bullets using the game variable
     render_game(game0, renderer, window);
     //present renderer
