@@ -8,8 +8,8 @@ void player_move(player* player, direction direction) {
   position newpos = player->pos;
 
   switch(direction) {
-    case LEFT : newpos.x -= PLAYER_SPEED;
-    case RIGHT : newpos.x += PLAYER_SPEED;
+    case LEFT : newpos.x -= PLAYER_SPEED; break;
+    case RIGHT : newpos.x += PLAYER_SPEED; break;
     default : {}
   }
 

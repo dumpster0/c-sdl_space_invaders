@@ -6,15 +6,11 @@
 #include "./bullets.h"
 
 void bullet_spawn(character shooter, position pos, bullet* bullets[MAX_BULLETS_ON_SCREEN]) {
-  bullet* bullet;
-
-  bullet->pos = pos;
-  bullet->shooter = shooter;
-  bullet->status = ACTIVE;
-
   for(int i = 0; i < MAX_BULLETS_ON_SCREEN; ++i) {
     if(bullets[i]->status == INACTIVE) {
-      bullets[i] = bullet;
+      bullets[i]->pos = pos;
+      bullets[i]->shooter = shooter;
+      bullets[i]->status = ACTIVE;
       break;
     }
   }
