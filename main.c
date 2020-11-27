@@ -4,6 +4,8 @@
 
 //sdl headers
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
+
 
 //custom headers
 #include "./helpers.h"
@@ -13,7 +15,7 @@
 #include "./game.h"
 #include "./render.h"
 
-void paused(SDL_Renderer* renderer, SDL_Window* window, game* game) {
+void paused(SDL_Renderer* renderer, SDL_Window* window, game* game, SDL_Texture* bg_texture, SDL_Texture* player_texture, SDL_Texture* bullet_texture, SDL_Texture* alien_texture[ALIEN_BLOCK_ROWS]) {
   SDL_Event event;
 
   int quit = 0;
@@ -35,6 +37,7 @@ void paused(SDL_Renderer* renderer, SDL_Window* window, game* game) {
   if(quit) {
     game_cleanup(game);
     free(game);
+    render_cleanup(bg_texture, player_texture, bullet_texture, alien_texture);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
@@ -44,7 +47,7 @@ void paused(SDL_Renderer* renderer, SDL_Window* window, game* game) {
   render_paused(renderer, game);
 }
 
-void over(SDL_Renderer* renderer, SDL_Window* window, game* game) {
+void over(SDL_Renderer* renderer, SDL_Window* window, game* game, SDL_Texture* bg_texture, SDL_Texture* player_texture, SDL_Texture* bullet_texture, SDL_Texture* alien_texture[ALIEN_BLOCK_ROWS]) {
   SDL_Event event;
 
   int quit = 0;
@@ -66,6 +69,7 @@ void over(SDL_Renderer* renderer, SDL_Window* window, game* game) {
   if(quit) {
     game_cleanup(game);
     free(game);
+    render_cleanup(bg_texture, player_texture, bullet_texture, alien_texture);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
@@ -75,7 +79,7 @@ void over(SDL_Renderer* renderer, SDL_Window* window, game* game) {
   render_over(renderer, game);
 }
 
-void start(SDL_Renderer* renderer, SDL_Window* window, game* game) {
+void start(SDL_Renderer* renderer, SDL_Window* window, game* game, SDL_Texture* bg_texture, SDL_Texture* player_texture, SDL_Texture* bullet_texture, SDL_Texture* alien_texture[ALIEN_BLOCK_ROWS]) {
   SDL_Event event;
 
   int quit = 0;
@@ -97,6 +101,8 @@ void start(SDL_Renderer* renderer, SDL_Window* window, game* game) {
   if(quit) {
     game_cleanup(game);
     free(game);
+    render_cleanup(bg_texture, player_texture, bullet_texture, alien_texture);
+    SDL_DestroyTexture(bg_texture);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
@@ -135,6 +141,43 @@ int main(int argc, char* argv[]) {
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
 
+  SDL_Surface* bg_surface = SDL_LoadBMP("./media/invaders_bg.bmp");
+  SDL_Texture* bg_texture = SDL_CreateTextureFromSurface(renderer, bg_surface);
+  SDL_FreeSurface(bg_surface);
+
+  SDL_Surface* player_surface = SDL_LoadBMP("./media/invaders_player.bmp");
+  SDL_Texture* player_texture = SDL_CreateTextureFromSurface(renderer, player_surface);
+  SDL_FreeSurface(player_surface);
+
+  SDL_Surface* bullet_surface = SDL_LoadBMP("./media/invaders_sword.bmp");
+  SDL_Texture* bullet_texture = SDL_CreateTextureFromSurface(renderer, bullet_surface);
+  SDL_FreeSurface(bullet_surface);
+
+  SDL_Texture* alien_texture[ALIEN_BLOCK_ROWS];
+
+  SDL_Surface* alien_surface = SDL_LoadBMP("./media/invaders_boss.bmp");
+  alien_texture[0] = SDL_CreateTextureFromSurface(renderer, alien_surface);
+  SDL_FreeSurface(alien_surface);
+
+  alien_surface = SDL_LoadBMP("./media/invaders_bezos.bmp");
+  alien_texture[1] = SDL_CreateTextureFromSurface(renderer, alien_surface);
+  SDL_FreeSurface(alien_surface);
+
+  alien_surface = SDL_LoadBMP("./media/invaders_zucc.bmp");
+  alien_texture[2] = SDL_CreateTextureFromSurface(renderer, alien_surface);
+  SDL_FreeSurface(alien_surface);
+
+  alien_surface = SDL_LoadBMP("./media/invaders_musk.bmp");
+  alien_texture[3] = SDL_CreateTextureFromSurface(renderer, alien_surface);
+  SDL_FreeSurface(alien_surface);
+
+  alien_surface = SDL_LoadBMP("./media/invaders_gates.bmp");
+  alien_texture[4] = SDL_CreateTextureFromSurface(renderer, alien_surface);
+  SDL_FreeSurface(alien_surface);
+
+
+
+
   int playerleft = 0;
   int playerright = 0;
   int quit = 0;
@@ -143,13 +186,13 @@ int main(int argc, char* argv[]) {
 
   while(1) {
     if(game0->state == PAUSED) {
-      paused(renderer, window, game0);
+      paused(renderer, window, game0, bg_texture, player_texture, bullet_texture, alien_texture);
     }
     else if(game0->state == OVER) {
-      over(renderer, window, game0);
+      over(renderer, window, game0, bg_texture, player_texture, bullet_texture, alien_texture);
     }
     else if(game0->state == START) {
-      start(renderer, window, game0);
+      start(renderer, window, game0, bg_texture, player_texture, bullet_texture, alien_texture);
     }
     else {
 
@@ -241,11 +284,11 @@ int main(int argc, char* argv[]) {
     }
 
     //render background
-    render_bg(renderer);
+    render_bg(renderer, bg_texture);
     //update entire game variable
     game_update(game0, alienmovecounter);
     //render player, aliens, and bullets using the game variable
-    render_game(game0, renderer, window);
+    render_game(game0, renderer, window, player_texture, bullet_texture, alien_texture);
     //present renderer
     SDL_RenderPresent(renderer);
 
@@ -264,6 +307,7 @@ int main(int argc, char* argv[]) {
   //clean up game, renderer and window
   game_cleanup(game0);
   free(game0);
+  render_cleanup(bg_texture, player_texture, bullet_texture, alien_texture);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
 
