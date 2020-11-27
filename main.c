@@ -111,7 +111,7 @@ void start(SDL_Renderer* renderer, SDL_Window* window, game* game) {
 
 
  
-int main() {
+int main(int argc, char* argv[]) {
 
   //initialize the game variable and allocate memory to it
   //this holds everything related to the current game,
