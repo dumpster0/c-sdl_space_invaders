@@ -1,4 +1,4 @@
-#include <stdio.h>
+Cleaned up formatting and removed unnecessary comments for better readability.#include <stdio.h>
 #include <stdlib.h>
 
 #include "./helpers.h"
